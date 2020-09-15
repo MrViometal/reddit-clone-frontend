@@ -15,46 +15,55 @@ const Index = () => {
 
   if (!fetching && !data) return <div>you have something wrong</div>;
 
+  const header = (
+    <Flex align='center'>
+      <Heading>LiReddit</Heading>
+      <Box ml='auto' style={{ color: 'green' }}>
+        <NextLink href='/create-post'>
+          <Link>Create Post</Link>
+        </NextLink>
+      </Box>
+    </Flex>
+  );
+
+  const posts =
+    !data && fetching ? (
+      <div>loading...</div>
+    ) : (
+      <Stack spacing={8}>
+        {data!.posts.posts.map(p => (
+          <Box key={p.id} p={5} shadow='md' borderWidth='1px'>
+            <Heading fontSize='xl'>{p.title}</Heading>
+            <Text mt={4}>{p.textSnippet}</Text>
+          </Box>
+        ))}
+      </Stack>
+    );
+
+  const loadMoreButton = data?.posts.hasMore && (
+    <Flex>
+      <Button
+        onClick={() =>
+          setVariables({
+            limit: variables.limit,
+            cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+          })
+        }
+        isLoading={fetching}
+        m='auto'
+        my={8}
+      >
+        Load more...
+      </Button>
+    </Flex>
+  );
+
   return (
     <Layout>
-      <Flex align='center'>
-        <Heading>LiReddit</Heading>
-        <Box ml='auto' style={{ color: 'green' }}>
-          <NextLink href='/create-post'>
-            <Link>Create Post</Link>
-          </NextLink>
-        </Box>
-      </Flex>
+      {header}
       <br />
-      {!data && fetching ? (
-        <div>loading...</div>
-      ) : (
-        <Stack spacing={8}>
-          {data!.posts.posts.map(p => (
-            <Box key={p.id} p={5} shadow='md' borderWidth='1px'>
-              <Heading fontSize='xl'>{p.title}</Heading>
-              <Text mt={4}>{p.textSnippet}</Text>
-            </Box>
-          ))}
-        </Stack>
-      )}
-      {data && data.posts.hasMore && (
-        <Flex>
-          <Button
-            onClick={() =>
-              setVariables({
-                limit: variables.limit,
-                cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
-              })
-            }
-            isLoading={fetching}
-            m='auto'
-            my={8}
-          >
-            Load more...
-          </Button>
-        </Flex>
-      )}
+      {posts}
+      {loadMoreButton}
     </Layout>
   );
 };
