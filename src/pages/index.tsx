@@ -14,6 +14,7 @@ import Layout from '../components/Layout';
 import { usePostsQuery } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
 import { useState } from 'react';
+import VoteSection from '../components/VoteSection';
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -42,16 +43,7 @@ const Index = () => {
       <Stack spacing={8}>
         {data!.posts.posts.map(p => (
           <Flex key={p.id} p={5} shadow='md' borderWidth='1px'>
-            <Flex
-              direction='column'
-              alignItems='center'
-              justifyContent='center'
-              mr={4}
-            >
-              <IconButton icon='chevron-up' aria-label='upVote post' />
-              {p.points}
-              <IconButton icon='chevron-down' aria-label='downVote post' />
-            </Flex>
+            <VoteSection post={p} />
             <Box>
               <Heading fontSize='xl'>{p.title}</Heading>
               <Text>posted by: {p.creator.username}</Text>
