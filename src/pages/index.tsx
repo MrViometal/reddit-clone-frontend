@@ -25,17 +25,6 @@ const Index = () => {
 
   if (!fetching && !data) return <div>you have something wrong</div>;
 
-  const header = (
-    <Flex align='center'>
-      <Heading>LiReddit</Heading>
-      <Box ml='auto' style={{ color: 'green' }}>
-        <NextLink href='/create-post'>
-          <Link>Create Post</Link>
-        </NextLink>
-      </Box>
-    </Flex>
-  );
-
   const posts =
     !data && fetching ? (
       <div>loading...</div>
@@ -45,7 +34,11 @@ const Index = () => {
           <Flex key={p.id} p={5} shadow='md' borderWidth='1px'>
             <VoteSection post={p} />
             <Box>
-              <Heading fontSize='xl'>{p.title}</Heading>
+              <NextLink href='/post/[id]' as={`/post/${p.id}`}>
+                <Link>
+                  <Heading fontSize='xl'>{p.title}</Heading>
+                </Link>
+              </NextLink>
               <Text>posted by: {p.creator.username}</Text>
               <Text mt={4}>{p.textSnippet}</Text>
             </Box>
@@ -74,8 +67,6 @@ const Index = () => {
 
   return (
     <Layout>
-      {header}
-      <br />
       {posts}
       {loadMoreButton}
     </Layout>
