@@ -11,7 +11,7 @@ import {
 import { withUrqlClient } from 'next-urql';
 import NextLink from 'next/link';
 import Layout from '../components/Layout';
-import { usePostsQuery } from '../generated/graphql';
+import { useDeletePostMutation, usePostsQuery } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
 import { useState } from 'react';
 import VoteSection from '../components/VoteSection';
@@ -22,6 +22,7 @@ const Index = () => {
     cursor: null as null | string,
   });
   const [{ data, fetching }] = usePostsQuery({ variables });
+  const [, deletePost] = useDeletePostMutation();
 
   if (!fetching && !data) return <div>you have something wrong</div>;
 
@@ -33,14 +34,23 @@ const Index = () => {
         {data!.posts.posts.map(p => (
           <Flex key={p.id} p={5} shadow='md' borderWidth='1px'>
             <VoteSection post={p} />
-            <Box>
+            <Box flex={1}>
               <NextLink href='/post/[id]' as={`/post/${p.id}`}>
                 <Link>
                   <Heading fontSize='xl'>{p.title}</Heading>
                 </Link>
               </NextLink>
               <Text>posted by: {p.creator.username}</Text>
-              <Text mt={4}>{p.textSnippet}</Text>
+              <Flex align='center'>
+                <Text mt={4}>{p.textSnippet}</Text>
+                <IconButton
+                  ml='auto'
+                  variantColor='red'
+                  icon='delete'
+                  aria-label='Delete Post'
+                  onClick={() => deletePost({ id: p.id })}
+                />
+              </Flex>
             </Box>
           </Flex>
         ))}
