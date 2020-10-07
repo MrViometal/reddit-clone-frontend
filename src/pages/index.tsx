@@ -15,9 +15,15 @@ const Index = () => {
   });
 
   const [{ data: meData }] = useMeQuery();
-  const [{ data, fetching }] = usePostsQuery({ variables });
+  const [{ data, error, fetching }] = usePostsQuery({ variables });
 
-  if (!fetching && !data) return <div>you have something wrong</div>;
+  if (!fetching && !data)
+    return (
+      <div>
+        <div>you have something wrong</div>
+        <div>{error?.message}</div>
+      </div>
+    );
 
   const posts =
     !data && fetching ? (
